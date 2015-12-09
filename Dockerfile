@@ -9,7 +9,6 @@ MAINTAINER ball6847@gmail.com
 # Version
 ENV NGINX_VERSION 1.9.9
 ENV NPS_VERSION 1.9.32.10
-ENV OPENSSL_VERSION 1.0.1p
 
 # Install Build Tools & Dependence
 RUN echo "deb-src http://http.debian.net/debian wheezy main\ndeb-src http://http.debian.net/debian wheezy-updates main\ndeb-src http://security.debian.org/ wheezy/updates main" >> /etc/apt/sources.list
