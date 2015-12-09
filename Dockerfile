@@ -4,7 +4,7 @@
 
 FROM debian:wheezy
 
-MAINTAINER 蒼時弦也 "docker@frost.tw"
+MAINTAINER ball6847@gmail.com
 
 # Version
 ENV NGINX_VERSION 1.9.9
