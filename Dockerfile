@@ -15,9 +15,7 @@ ENV OPENSSL_VERSION 1.0.1p
 RUN echo "deb-src http://http.debian.net/debian wheezy main\ndeb-src http://http.debian.net/debian wheezy-updates main\ndeb-src http://security.debian.org/ wheezy/updates main" >> /etc/apt/sources.list
 
 RUN apt-get update && \
-    apt-get build-dep nginx-full -y && \
-    apt-get install -y build-essential zlib1g-dev libpcre3 libpcre3-dev && \
-    apt-get install wget -y && \
+    apt-get install -y build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -36,11 +34,6 @@ RUN cd /usr/src && \
     wget -q http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
     tar xzf nginx-${NGINX_VERSION}.tar.gz && \
     rm -rf nginx-${NGINX_VERSION}.tar.gz && \
-
-    cd /usr/src && \
-    wget -q http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
-    tar xzf openssl-${OPENSSL_VERSION}.tar.gz && \
-    rm -rf openssl-${OPENSSL_VERSION}.tar.gz && \
 
     # Install Addational Module
     cd ${MODULE_DIR} && \
@@ -64,8 +57,7 @@ RUN cd /usr/src && \
     --http-log-path=/var/log/nginx/access.log \
     --with-http_ssl_module \
     --with-http_gzip_static_module \
-    --with-openssl="../opddenssl-${OPENSSL_VERSION}" \
-    --with-http_v2_module
+    --with-http_v2_module \
     --add-module=${MODULE_DIR}/ngx_pagespeed-release-${NPS_VERSION}-beta && \
 
     # Install Nginx
