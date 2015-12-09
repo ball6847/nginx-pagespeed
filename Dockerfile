@@ -7,8 +7,8 @@ FROM debian:wheezy
 MAINTAINER 蒼時弦也 "docker@frost.tw"
 
 # Version
-ENV NGINX_VERSION 1.8.0
-ENV NPS_VERSION 1.9.32.6
+ENV NGINX_VERSION 1.9.9
+ENV NPS_VERSION 1.9.32.10
 ENV OPENSSL_VERSION 1.0.1p
 
 # Install Build Tools & Dependence
@@ -63,18 +63,9 @@ RUN cd /usr/src && \
     --error-log-path=/var/log/nginx/error.log \
     --http-log-path=/var/log/nginx/access.log \
     --with-http_ssl_module \
-    --with-http_realip_module \
-    --with-http_flv_module \
-    --with-http_mp4_module \
-    --with-http_gunzip_module \
     --with-http_gzip_static_module \
-    --with-http_secure_link_module \
-    --with-http_spdy_module \
-    --with-file-aio \
-    --with-ipv6 \
-    --with-sha1=/usr/include/openssl \
-    --with-md5=/usr/include/openssl \
-    --with-openssl="../openssl-${OPENSSL_VERSION}" \
+    --with-openssl="../opddenssl-${OPENSSL_VERSION}" \
+    --with-http_v2_module
     --add-module=${MODULE_DIR}/ngx_pagespeed-release-${NPS_VERSION}-beta && \
 
     # Install Nginx
