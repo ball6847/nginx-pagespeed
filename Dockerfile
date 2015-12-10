@@ -1,35 +1,19 @@
-###
-# Nginx with Pagespeed
-###
-
 FROM debian:wheezy
-
 MAINTAINER ball6847@gmail.com
 
 # Version
 ENV NGINX_VERSION 1.9.9
 ENV NPS_VERSION 1.9.32.10
-
-# Install Build Tools & Dependence
-RUN echo "deb-src http://http.debian.net/debian wheezy main\ndeb-src http://http.debian.net/debian wheezy-updates main\ndeb-src http://security.debian.org/ wheezy/updates main" >> /etc/apt/sources.list
-
-RUN apt-get update && \
-    apt-get install -y build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev wget && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# ===========
-# Build Nginx
-# ===========
-
-# Setting Up ENV
 ENV MODULE_DIR /usr/src/nginx-modules
 
-# Create Module Directory
-RUN mkdir ${MODULE_DIR}
-
 # Download Source
-RUN cd /usr/src && \
+RUN echo "deb-src http://http.debian.net/debian wheezy main\ndeb-src http://http.debian.net/debian wheezy-updates main\ndeb-src http://security.debian.org/ wheezy/updates main" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir ${MODULE_DIR} && \
+    cd /usr/src && \
     wget -q http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
     tar xzf nginx-${NGINX_VERSION}.tar.gz && \
     rm -rf nginx-${NGINX_VERSION}.tar.gz && \
@@ -66,15 +50,17 @@ RUN cd /usr/src && \
     # Clear source code to reduce container size
     rm -rf /usr/src/*
 
-ADD conf/nginx.conf /etc/nginx/nginx.conf
+ADD conf/* /etc/nginx/
+ADD entrypoint.sh /entrypoint.sh
 
 # Forward requests and errors to docker logs
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
-VOLUME ["/var/cache/nginx", "/var/cache/ngx_pagespeed"]
+VOLUME ["/var/cache/nginx", "/var/cache/ngx_pagespeed", "/var/www"]
+
+WORKDIR /etc/nginx
 
 EXPOSE 80 443
 
-CMD ["nginx", "-g", "daemon off;"]
-
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
