@@ -2,8 +2,8 @@ FROM debian:wheezy
 MAINTAINER ball6847@gmail.com
 
 # Version
-ENV NGINX_VERSION 1.9.9
-ENV NPS_VERSION 1.9.32.10
+ENV NGINX_VERSION 1.9.14
+ENV NPS_VERSION 1.11.33.0
 ENV MODULE_DIR /usr/src/nginx-modules
 
 # Download Source
