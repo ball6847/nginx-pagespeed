@@ -2,11 +2,11 @@
 
 set -e
 
-buildDeps="build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev"
+sed -i 's/archive./th.archive./g' /etc/apt/sources.list
 
 # prepare dependencies
 apt-get update
-apt-get install -y $buildDeps wget unzip
+apt-get install -y build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev wget unzip
 
 # prepare ngx_pagespeed
 cd /usr/src
@@ -48,7 +48,7 @@ make
 make install
 
 # make container a little smaller
-apt-get purge -y --auto-remove $buildDeps
+apt-get purge -y --auto-remove build-essential
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 rm -rf /usr/src/*

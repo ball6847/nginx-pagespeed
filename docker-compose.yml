@@ -1,0 +1,8 @@
+nginx:
+    image: ubuntu:16.04
+    container_name: nginx
+    entrypoint: sh -c "while true; do sleep 2; done;"
+    environment:
+        - TERM=xterm-256color
+    volumes:
+        - ./build.sh:/build.sh
