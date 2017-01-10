@@ -3,4 +3,4 @@ nginx:
     container_name: nginx
     environment:
         - TERM=xterm-256color
-    entrypoint: sh -c "while true; do sleep 2;done;"
+    # entrypoint: sh -c "while true; do sleep 2;done;"
