@@ -6,10 +6,10 @@ ENV NGINX_VERSION 1.9.14
 ENV NPS_VERSION 1.11.33.0
 ENV TERM xterm-256color
 
-RUN BUILD_DEPS="build-essential zlib1g-dev git libpcre3-dev libssl-dev wget unzip automake gcc make pkg-config libtool g++ libfl-dev bison libbison-dev libyajl-dev liblmdb-dev libcurl4-openssl-dev libgeoip-dev libxml2-dev flex" && \
+RUN BUILD_DEPS="build-essential git unzip automake gcc make pkg-config libtool g++" && \
     sed -i 's/archive./sg.archive./g' /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y $BUILD_DEPS && \
+    apt-get install -y $BUILD_DEPS zlib1g-dev libpcre3-dev libssl-dev wget libfl-dev bison libbison-dev libyajl-dev liblmdb-dev libcurl4-openssl-dev libgeoip-dev libxml2-dev flex && \
     cd /usr/src && git clone https://github.com/SpiderLabs/ModSecurity && \
     cd ModSecurity/ && git checkout -b v3/master origin/v3/master && git submodule init && git submodule update && \
     cd /usr/src && git clone https://github.com/SpiderLabs/ModSecurity-nginx.git && \
