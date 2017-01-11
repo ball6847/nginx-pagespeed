@@ -4,14 +4,13 @@ MAINTAINER ball6847@gmail.com
 # Version
 ENV NGINX_VERSION 1.9.14
 ENV NPS_VERSION 1.11.33.0
+ENV TERM xterm-256color
 
-# time consumed task separated to one run
-RUN sed -i 's/archive./sg.archive./g' /etc/apt/sources.list && \
+RUN BUILD_DEPS="build-essential zlib1g-dev git libpcre3-dev libssl-dev wget unzip automake gcc make pkg-config libtool g++ libfl-dev bison libbison-dev libyajl-dev liblmdb-dev libcurl4-openssl-dev libgeoip-dev libxml2-dev flex" && \
+    sed -i 's/archive./sg.archive./g' /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y build-essential zlib1g-dev libpcre3 git libpcre3-dev libssl-dev wget unzip automake gcc make pkg-config libtool g++ libfl-dev bison libbison-dev libyajl-dev liblmdb-dev libcurl4-openssl-dev libgeoip-dev libxml2-dev flex
-
-# grab source code, another time consumed task
-RUN cd /usr/src && git clone https://github.com/SpiderLabs/ModSecurity && \
+    apt-get install -y $BUILD_DEPS && \
+    cd /usr/src && git clone https://github.com/SpiderLabs/ModSecurity && \
     cd ModSecurity/ && git checkout -b v3/master origin/v3/master && git submodule init && git submodule update && \
     cd /usr/src && git clone https://github.com/SpiderLabs/ModSecurity-nginx.git && \
     git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git && \
@@ -21,9 +20,8 @@ RUN cd /usr/src && git clone https://github.com/SpiderLabs/ModSecurity && \
     unzip release-${NPS_VERSION}-beta.zip && \
     cd ngx_pagespeed-release-${NPS_VERSION}-beta/ && \
     wget https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz && \
-    tar -xzvf ${NPS_VERSION}.tar.gz
-
-RUN cd /usr/src/ModSecurity && ./build.sh && ./configure && make && make install && \
+    tar -xzvf ${NPS_VERSION}.tar.gz && \
+    cd /usr/src/ModSecurity && ./build.sh && ./configure && make && make install && \
     cd /usr/src/nginx-${NGINX_VERSION}/ && \
     ./configure \
       --prefix=/var/lib/nginx \
@@ -54,7 +52,7 @@ RUN cd /usr/src/ModSecurity && ./build.sh && ./configure && make && make install
     mkdir -p /etc/nginx/conf && \
     cat /usr/src/owasp-modsecurity-crs/crs-setup.conf.example /usr/src/owasp-modsecurity-crs/rules/*.conf >> /etc/nginx/conf/modsecurity.conf && \
     cp /usr/src/owasp-modsecurity-crs/rules/*.data /etc/nginx/conf/ && \
-    apt-get purge -y --auto-remove build-essential && \
+    apt-get purge -y --auto-remove $BUILD_DEPS && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -63,8 +61,6 @@ RUN cd /usr/src/ModSecurity && ./build.sh && ./configure && make && make install
 ADD conf/* /etc/nginx/
 ADD www/ /var/www/
 ADD entrypoint.sh /entrypoint.sh
-
-ENV TERM xterm-256color
 
 VOLUME ["/var/cache/nginx", "/var/cache/ngx_pagespeed", "/var/www"]
 
